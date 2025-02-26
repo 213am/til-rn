@@ -1,10 +1,33 @@
-import React from 'react';
-import {ActivityIndicator, SafeAreaView, StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  BackHandler,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import WebView from 'react-native-webview';
 
 const App = (): JSX.Element => {
   const webViewUrl = 'https://app-fish-y3pa.vercel.app';
+
+  // back 키 처리
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('앱 종료', '앱을 종료하시겠습니까?', [
+        {text: '취소', onPress: () => null, style: 'cancel'},
+        {text: '종료', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true; // 기본 뒤로가기 방지
+    };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+    return () => backHandler.remove(); // 앱 종료시 이벤트 제거
+  }, []);
 
   // SafeAreaView 는 기기의 indicator 영역을 제외한 컨텐츠 영역 배치
   return (
